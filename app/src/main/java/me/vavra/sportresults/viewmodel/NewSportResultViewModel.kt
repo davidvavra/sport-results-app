@@ -21,9 +21,9 @@ class NewSportResultViewModel : ViewModel() {
                 duration = EMPTY_DURATION,
                 remote = true
             ),
-            nameValid = false,
-            placeValid = false,
-            durationValid = false,
+            nameValid = true,
+            placeValid = true,
+            durationValid = true,
             savingState = null
         )
     )
@@ -47,7 +47,7 @@ class NewSportResultViewModel : ViewModel() {
 
     fun durationChanged(duration: String) {
         val newDuration = duration.toIntOrNull() ?: EMPTY_DURATION
-        val valid = newDuration != EMPTY_DURATION
+        val valid = newDuration != EMPTY_DURATION && newDuration > 0
         state = state.copy(
             sportResult = state.sportResult.copy(duration = newDuration),
             durationValid = valid
@@ -59,6 +59,12 @@ class NewSportResultViewModel : ViewModel() {
     }
 
     fun save() {
+        // Run validations before saving, because everything is valid at the beginning
+        // (showing validation errors at he beginning is a bad UX)
+        nameChanged(state.sportResult.name)
+        placeChanged(state.sportResult.place)
+        durationChanged(state.sportResult.duration.toString())
+        // Only proceed if everything is valid
         if (state.nameValid && state.placeValid && state.durationValid) {
             viewModelScope.launch {
                 state = state.copy(savingState = SavingState.IN_PROGRESS)
