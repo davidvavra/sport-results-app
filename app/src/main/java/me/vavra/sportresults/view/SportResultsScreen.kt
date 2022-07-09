@@ -8,18 +8,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import me.vavra.sportresults.R
 import me.vavra.sportresults.model.SportResult
+import me.vavra.sportresults.model.SportResultsState
 import me.vavra.sportresults.ui.theme.SportResultsTheme
+import me.vavra.sportresults.viewmodel.SportResultsViewModel
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
-fun SportResultsScreen(onFabTapped: () -> Unit) {
+fun SportResultsScreen(viewModel: SportResultsViewModel = viewModel(), onFabTapped: () -> Unit) {
     Scaffold(
         topBar = {
             SmallTopAppBar(title = { Text(text = "Sport results") })
@@ -31,46 +34,72 @@ fun SportResultsScreen(onFabTapped: () -> Unit) {
                 Text("New sport result")
             })
         },
-        content = {
-            SportResultsContent(it)
+        content = { padding ->
+            SportResultsContent(
+                state = viewModel.state,
+                padding = padding,
+                onShowRemoteTapped = {
+                    viewModel.changeShowRemote()
+                }, onShowLocalTapped = {
+                    viewModel.changeShowLocal()
+                }
+            )
         }
     )
 }
 
 @Composable
-private fun SportResultsContent(paddingValues: PaddingValues) {
+private fun SportResultsContent(
+    state: SportResultsState,
+    padding: PaddingValues,
+    onShowRemoteTapped: () -> Unit,
+    onShowLocalTapped: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(padding)
             .padding(horizontal = 16.dp)
     ) {
-        StorageFilter()
-        SportResultsList(
-            listOf(
-                SportResult("Tenis", "Praha", 45, true),
-                SportResult("Plavání", "Praha", 60, false),
-                SportResult("Squash", "Brno", 20, true)
-            )
+        StorageFilter(state.showRemote, state.showLocal, onShowRemoteTapped, onShowLocalTapped)
+        SportResultsList(state.sportResults)
+    }
+}
+
+@Composable
+private fun StorageFilter(
+    showRemote: Boolean,
+    showLocal: Boolean,
+    onShowRemoteTapped: () -> Unit,
+    onShowLocalTapped: () -> Unit
+) {
+    Row {
+        StorageFilterItem(
+            selected = showRemote,
+            titleText = "Online",
+            iconRes = R.drawable.ic_cloud_on,
+            onTapped = onShowRemoteTapped
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        StorageFilterItem(
+            selected = showLocal,
+            titleText = "Local",
+            iconRes = R.drawable.ic_cloud_off,
+            onTapped = onShowLocalTapped
         )
     }
 }
 
 @Composable
-private fun StorageFilter() {
-    Row {
-        StorageFilterItem(titleText = "Online", iconRes = R.drawable.ic_cloud_on)
-        Spacer(modifier = Modifier.width(8.dp))
-        StorageFilterItem(titleText = "Local", iconRes = R.drawable.ic_cloud_off)
-    }
-}
-
-@Composable
-private fun StorageFilterItem(titleText: String, iconRes: Int) {
-    var selected by remember { mutableStateOf(true) }
+private fun StorageFilterItem(
+    selected: Boolean,
+    titleText: String,
+    iconRes: Int,
+    onTapped: () -> Unit
+) {
     FilterChip(
         selected = selected,
-        onClick = { selected = !selected },
+        onClick = onTapped,
         label = { Text(titleText) },
         trailingIcon = { Icon(painterResource(iconRes), null) }
     )

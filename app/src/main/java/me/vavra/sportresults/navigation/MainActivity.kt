@@ -16,13 +16,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             SportResultsTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "sport-results") {
-                    composable("sport-results") {
+                NavHost(navController = navController, startDestination = SPORT_RESULTS_DESTINATION) {
+                    composable(SPORT_RESULTS_DESTINATION) {
                         SportResultsScreen(onFabTapped = {
-                            navController.navigate("new-sport-result")
+                            navController.navigate(NEW_SPORT_RESULT_DESTINATION)
                         })
                     }
-                    composable("new-sport-result") {
+                    composable(NEW_SPORT_RESULT_DESTINATION) {
                         NewSportResultScreen(onGoBack = {
                             navController.navigateUp()
                         })
@@ -30,6 +30,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val SPORT_RESULTS_DESTINATION = "sport-results"
+        private const val NEW_SPORT_RESULT_DESTINATION = "new-sport-result"
     }
 
 }
