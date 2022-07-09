@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package me.vavra.sportresults.ui
+package me.vavra.sportresults.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +19,7 @@ import me.vavra.sportresults.ui.theme.SportResultsTheme
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
-fun SportResults(onFabTapped: () -> Unit) {
+fun SportResultsScreen(onFabTapped: () -> Unit) {
     Scaffold(
         topBar = {
             SmallTopAppBar(title = { Text(text = "Sport results") })
@@ -102,6 +102,6 @@ private fun SportResultItem(sportResult: SportResult) {
 @Preview(showBackground = true)
 private fun SportResultsPreview() {
     SportResultsTheme {
-        SportResults {}
+        SportResultsScreen {}
     }
 }
