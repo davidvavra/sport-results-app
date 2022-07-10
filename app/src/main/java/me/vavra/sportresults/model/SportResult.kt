@@ -3,8 +3,9 @@ package me.vavra.sportresults.model
 data class SportResult(
     val name: String,
     val place: String,
-    val duration: Int,
-    val remote: Boolean
+    val durationMinutes: Int,
+    val remote: Boolean,
+    val timestamp: Long
 ) {
 
     companion object {

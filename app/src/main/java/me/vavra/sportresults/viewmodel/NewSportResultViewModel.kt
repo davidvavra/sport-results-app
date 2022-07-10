@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.vavra.sportresults.model.NewSportResultState
 import me.vavra.sportresults.model.SavingState
 import me.vavra.sportresults.model.SportResult
 import me.vavra.sportresults.model.SportResult.Companion.EMPTY_DURATION
+import me.vavra.sportresults.storage.LocalStorageRepository
 
 class NewSportResultViewModel : ViewModel() {
     var state by mutableStateOf(
@@ -18,7 +18,7 @@ class NewSportResultViewModel : ViewModel() {
             sportResult = SportResult(
                 name = "",
                 place = "",
-                duration = EMPTY_DURATION,
+                durationMinutes = EMPTY_DURATION,
                 remote = true
             ),
             nameValid = true,
@@ -46,7 +46,7 @@ class NewSportResultViewModel : ViewModel() {
     fun durationChanged(duration: String) {
         val newDuration = duration.toIntOrNull() ?: EMPTY_DURATION
         state = state.copy(
-            sportResult = state.sportResult.copy(duration = newDuration)
+            sportResult = state.sportResult.copy(durationMinutes = newDuration)
         )
         validateDuration()
     }
@@ -65,10 +65,17 @@ class NewSportResultViewModel : ViewModel() {
         if (state.nameValid && state.placeValid && state.durationValid) {
             viewModelScope.launch {
                 state = state.copy(savingState = SavingState.IN_PROGRESS)
-                delay(2000)
-                state = state.copy(savingState = SavingState.ERROR)
-                delay(2000)
-                state = state.copy(savingState = SavingState.SUCCESS)
+                try {
+                    if (state.sportResult.remote) {
+
+                    } else {
+                        LocalStorageRepository.new(state.sportResult)
+                    }
+                    state = state.copy(savingState = SavingState.SUCCESS)
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                    state = state.copy(savingState = SavingState.ERROR)
+                }
             }
         }
     }
@@ -88,7 +95,7 @@ class NewSportResultViewModel : ViewModel() {
     }
 
     private fun validateDuration() {
-        val isValid = state.sportResult.duration > 0
+        val isValid = state.sportResult.durationMinutes > 0
         state = state.copy(
             durationValid = isValid
         )

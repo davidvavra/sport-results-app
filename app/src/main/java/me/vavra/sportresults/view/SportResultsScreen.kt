@@ -116,7 +116,7 @@ private fun SportResultsList(sportResults: List<SportResult>) {
 
 @Composable
 private fun SportResultItem(sportResult: SportResult) {
-    val durationFormatted = sportResult.duration.minutes.toString()
+    val durationFormatted = sportResult.durationMinutes.minutes.toString()
     val secondaryText = durationFormatted + " · " + sportResult.place
     val iconRes = if (sportResult.remote) R.drawable.ic_cloud_on else R.drawable.ic_cloud_off
     ListItem(

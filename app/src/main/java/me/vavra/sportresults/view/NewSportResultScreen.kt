@@ -108,7 +108,7 @@ private fun NewSportResultContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
         val duration =
-            if (state.sportResult.duration == EMPTY_DURATION) "" else state.sportResult.duration.toString()
+            if (state.sportResult.durationMinutes == EMPTY_DURATION) "" else state.sportResult.durationMinutes.toString()
         TextField(
             value = duration,
             onValueChange = onDurationChanged,

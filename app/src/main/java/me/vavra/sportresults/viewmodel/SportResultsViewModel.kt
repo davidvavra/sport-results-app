@@ -4,22 +4,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import me.vavra.sportresults.model.SportResult
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import me.vavra.sportresults.model.SportResultsState
+import me.vavra.sportresults.storage.LocalStorageRepository
 
 class SportResultsViewModel : ViewModel() {
     var state by mutableStateOf(
         SportResultsState(
-            sportResults = listOf(
-                SportResult("Tenis", "Praha", 45, true),
-                SportResult("Plavání", "Praha", 60, false),
-                SportResult("Squash", "Brno", 20, true)
-            ),
+            sportResults = listOf(),
             showRemote = true,
             showLocal = true
         )
     )
         private set
+
+    fun load() {
+        viewModelScope.launch {
+            val local = LocalStorageRepository.get()
+            val all = local.sortedByDescending { it.timestamp }
+            state = state.copy(sportResults = all)
+        }
+    }
 
     fun changeShowRemote() {
         state = state.copy(showRemote = !state.showRemote)
