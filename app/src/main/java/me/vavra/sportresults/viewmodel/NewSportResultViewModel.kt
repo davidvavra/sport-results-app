@@ -30,28 +30,25 @@ class NewSportResultViewModel : ViewModel() {
         private set
 
     fun nameChanged(name: String) {
-        val valid = name.isNotBlank()
         state = state.copy(
-            sportResult = state.sportResult.copy(name = name),
-            nameValid = valid
+            sportResult = state.sportResult.copy(name = name)
         )
+        validateName()
     }
 
     fun placeChanged(place: String) {
-        val valid = place.isNotBlank()
         state = state.copy(
             sportResult = state.sportResult.copy(place = place),
-            placeValid = valid
         )
+        validatePlace()
     }
 
     fun durationChanged(duration: String) {
         val newDuration = duration.toIntOrNull() ?: EMPTY_DURATION
-        val valid = newDuration != EMPTY_DURATION && newDuration > 0
         state = state.copy(
-            sportResult = state.sportResult.copy(duration = newDuration),
-            durationValid = valid
+            sportResult = state.sportResult.copy(duration = newDuration)
         )
+        validateDuration()
     }
 
     fun remoteChanged(remote: Boolean) {
@@ -61,9 +58,9 @@ class NewSportResultViewModel : ViewModel() {
     fun save() {
         // Run validations before saving, because everything is valid at the beginning
         // (showing validation errors at he beginning is a bad UX)
-        nameChanged(state.sportResult.name)
-        placeChanged(state.sportResult.place)
-        durationChanged(state.sportResult.duration.toString())
+        validateName()
+        validatePlace()
+        validateDuration()
         // Only proceed if everything is valid
         if (state.nameValid && state.placeValid && state.durationValid) {
             viewModelScope.launch {
@@ -74,5 +71,26 @@ class NewSportResultViewModel : ViewModel() {
                 state = state.copy(savingState = SavingState.SUCCESS)
             }
         }
+    }
+
+    private fun validateName() {
+        val isValid = state.sportResult.name.isNotBlank()
+        state = state.copy(
+            nameValid = isValid
+        )
+    }
+
+    private fun validatePlace() {
+        val isValid = state.sportResult.place.isNotBlank()
+        state = state.copy(
+            placeValid = isValid
+        )
+    }
+
+    private fun validateDuration() {
+        val isValid = state.sportResult.duration > 0
+        state = state.copy(
+            durationValid = isValid
+        )
     }
 }
