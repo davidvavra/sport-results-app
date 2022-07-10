@@ -10,7 +10,8 @@ import me.vavra.sportresults.model.NewSportResultState
 import me.vavra.sportresults.model.SavingState
 import me.vavra.sportresults.model.SportResult
 import me.vavra.sportresults.model.SportResult.Companion.EMPTY_DURATION
-import me.vavra.sportresults.storage.LocalStorageRepository
+import me.vavra.sportresults.network.RemoteRepository
+import me.vavra.sportresults.storage.LocalRepository
 
 class NewSportResultViewModel : ViewModel() {
     var state by mutableStateOf(
@@ -68,9 +69,9 @@ class NewSportResultViewModel : ViewModel() {
                 state = state.copy(savingState = SavingState.IN_PROGRESS)
                 try {
                     if (state.sportResult.remote) {
-
+                        RemoteRepository.new(state.sportResult)
                     } else {
-                        LocalStorageRepository.new(state.sportResult)
+                        LocalRepository.new(state.sportResult)
                     }
                     state = state.copy(savingState = SavingState.SUCCESS)
                 } catch (e: Throwable) {

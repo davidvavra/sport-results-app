@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.map
 import me.vavra.sportresults.App
 import me.vavra.sportresults.model.SportResult
 
-object LocalStorageRepository {
+object LocalRepository {
     private val db = Room.databaseBuilder(
         App.context,
         AppDatabase::class.java,

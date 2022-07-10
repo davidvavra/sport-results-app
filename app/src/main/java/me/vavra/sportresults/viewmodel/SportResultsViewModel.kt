@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import me.vavra.sportresults.model.SportResultsState
-import me.vavra.sportresults.storage.LocalStorageRepository
+import me.vavra.sportresults.network.RemoteRepository
+import me.vavra.sportresults.storage.LocalRepository
 
 class SportResultsViewModel : ViewModel() {
     var state by mutableStateOf(
@@ -21,9 +23,11 @@ class SportResultsViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            LocalStorageRepository.observe().collect { local ->
-                val all = local.sortedByDescending { it.timestamp }
-                state = state.copy(sportResults = all)
+            LocalRepository.observe().combine(RemoteRepository.observe()) { local, remote ->
+                local + remote
+            }.collect { merged ->
+                val sorted = merged.sortedByDescending { it.timestamp }
+                state = state.copy(sportResults = sorted)
             }
         }
     }

@@ -3,9 +3,12 @@ package me.vavra.sportresults.navigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
+import me.vavra.sportresults.network.RemoteRepository
 import me.vavra.sportresults.ui.theme.SportResultsTheme
 import me.vavra.sportresults.view.NewSportResultScreen
 import me.vavra.sportresults.view.SportResultsScreen
@@ -27,6 +30,16 @@ class MainActivity : ComponentActivity() {
                             navController.navigateUp()
                         })
                     }
+                }
+            }
+        }
+        if (savedInstanceState == null) {
+            // Load data from network only for the first time
+            lifecycleScope.launch {
+                try {
+                    RemoteRepository.load()
+                } catch (e: Throwable) {
+                    e.printStackTrace()
                 }
             }
         }
