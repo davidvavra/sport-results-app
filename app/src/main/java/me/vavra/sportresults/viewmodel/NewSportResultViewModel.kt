@@ -19,7 +19,8 @@ class NewSportResultViewModel : ViewModel() {
                 name = "",
                 place = "",
                 durationMinutes = EMPTY_DURATION,
-                remote = true
+                remote = true,
+                timestamp = 0
             ),
             nameValid = true,
             placeValid = true,

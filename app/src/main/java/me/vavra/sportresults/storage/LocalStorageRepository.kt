@@ -1,6 +1,8 @@
 package me.vavra.sportresults.storage
 
 import androidx.room.Room
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import me.vavra.sportresults.App
 import me.vavra.sportresults.model.SportResult
 
@@ -12,15 +14,17 @@ object LocalStorageRepository {
     ).build()
     private val dao = db.sportResultDao()
 
-    suspend fun get(): List<SportResult> {
-        return dao.getAll().map {
-            SportResult(
-                name = it.name,
-                place = it.place,
-                durationMinutes = it.durationMinutes,
-                remote = false,
-                timestamp = it.timestamp
-            )
+    fun observe(): Flow<List<SportResult>> {
+        return dao.observeAll().map { entities ->
+            entities.map {
+                SportResult(
+                    name = it.name,
+                    place = it.place,
+                    durationMinutes = it.durationMinutes,
+                    remote = false,
+                    timestamp = it.timestamp
+                )
+            }
         }
     }
 

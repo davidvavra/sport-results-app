@@ -19,11 +19,12 @@ class SportResultsViewModel : ViewModel() {
     )
         private set
 
-    fun load() {
+    init {
         viewModelScope.launch {
-            val local = LocalStorageRepository.get()
-            val all = local.sortedByDescending { it.timestamp }
-            state = state.copy(sportResults = all)
+            LocalStorageRepository.observe().collect { local ->
+                val all = local.sortedByDescending { it.timestamp }
+                state = state.copy(sportResults = all)
+            }
         }
     }
 
