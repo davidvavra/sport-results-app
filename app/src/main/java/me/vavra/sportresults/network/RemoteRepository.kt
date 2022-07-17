@@ -5,8 +5,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import me.vavra.sportresults.model.SportResult
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object RemoteRepository {
+@Singleton
+class RemoteRepository @Inject constructor() {
     private val remoteService = Retrofit.Builder()
         .baseUrl("https://sport-results-654a4-default-rtdb.europe-west1.firebasedatabase.app")
         .addConverterFactory(MoshiConverterFactory.create())

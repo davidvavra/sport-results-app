@@ -7,13 +7,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import me.vavra.sportresults.network.RemoteRepository
 import me.vavra.sportresults.ui.theme.SportResultsTheme
 import me.vavra.sportresults.view.NewSportResultScreen
 import me.vavra.sportresults.view.SportResultsScreen
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var remoteRepository: RemoteRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,7 +44,7 @@ class MainActivity : ComponentActivity() {
             // Load data from network only for the first time
             lifecycleScope.launch {
                 try {
-                    RemoteRepository.load()
+                    remoteRepository.load()
                 } catch (e: Throwable) {
                     e.printStackTrace()
                 }

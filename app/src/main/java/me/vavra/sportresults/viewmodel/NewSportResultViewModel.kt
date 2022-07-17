@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import me.vavra.sportresults.model.NewSportResultState
 import me.vavra.sportresults.model.SavingState
@@ -12,8 +13,13 @@ import me.vavra.sportresults.model.SportResult
 import me.vavra.sportresults.model.SportResult.Companion.EMPTY_DURATION
 import me.vavra.sportresults.network.RemoteRepository
 import me.vavra.sportresults.storage.LocalRepository
+import javax.inject.Inject
 
-class NewSportResultViewModel : ViewModel() {
+@HiltViewModel
+class NewSportResultViewModel @Inject constructor(
+    private val remoteRepository: RemoteRepository,
+    private val localRepository: LocalRepository
+) : ViewModel() {
     var state by mutableStateOf(
         NewSportResultState(
             sportResult = SportResult(
@@ -69,9 +75,9 @@ class NewSportResultViewModel : ViewModel() {
                 state = state.copy(savingState = SavingState.IN_PROGRESS)
                 try {
                     if (state.sportResult.remote) {
-                        RemoteRepository.new(state.sportResult)
+                        remoteRepository.new(state.sportResult)
                     } else {
-                        LocalRepository.new(state.sportResult)
+                        localRepository.new(state.sportResult)
                     }
                     state = state.copy(savingState = SavingState.SUCCESS)
                 } catch (e: Throwable) {

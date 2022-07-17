@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import me.vavra.sportresults.R
 import me.vavra.sportresults.model.SportResult
 import me.vavra.sportresults.model.SportResultsState
@@ -22,7 +22,7 @@ import me.vavra.sportresults.viewmodel.SportResultsViewModel
 import kotlin.time.Duration.Companion.minutes
 
 @Composable
-fun SportResultsScreen(viewModel: SportResultsViewModel = viewModel(), onFabTapped: () -> Unit) {
+fun SportResultsScreen(viewModel: SportResultsViewModel = hiltViewModel(), onFabTapped: () -> Unit) {
     Scaffold(
         topBar = {
             SmallTopAppBar(title = { Text(text = "Sport results") })

@@ -14,6 +14,7 @@ The app is a simple tracker of sport results. It allows to enter name, place and
 - Dark mode support
 - Portrait & landscape support, proper handling of orientation changes
 - ViewModels for each composable screen
+- Dependency injection via Hilt
 - Room database with observing data via Flow
 - Retrofit+Moshi+coroutines for network requests
 - Backend is unauthenticated Firebase Realtime Database (but accessed via REST API, not SDK)
@@ -22,7 +23,6 @@ The app is a simple tracker of sport results. It allows to enter name, place and
 ## Further work
 I skipped some tech I would normally include in a real production app due to time contraints:
 - Localization (now hardcoded strings)
-- Dependency injection via Hilt (now using Kotlin singleton `objects`)
 - Modularization (`feature/sport-results`, `feature/new-sport-result`, `common/storage`, `common/network`, `common/ui`, `app`)
 - Unit tests for viewmodels & repositories
 - Screenshot tests

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import me.vavra.sportresults.model.NewSportResultState
 import me.vavra.sportresults.model.SavingState
 import me.vavra.sportresults.model.SportResult.Companion.EMPTY_DURATION
@@ -23,7 +23,7 @@ import me.vavra.sportresults.ui.theme.SportResultsTheme
 import me.vavra.sportresults.viewmodel.NewSportResultViewModel
 
 @Composable
-fun NewSportResultScreen(viewModel: NewSportResultViewModel = viewModel(), onGoBack: () -> Unit) {
+fun NewSportResultScreen(viewModel: NewSportResultViewModel = hiltViewModel(), onGoBack: () -> Unit) {
     Scaffold(
         topBar = {
             SmallTopAppBar(title = { Text(text = "New sport result") }, navigationIcon = {

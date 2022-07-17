@@ -5,14 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import me.vavra.sportresults.model.SportResult
 import me.vavra.sportresults.model.SportResultsState
 import me.vavra.sportresults.network.RemoteRepository
 import me.vavra.sportresults.storage.LocalRepository
+import javax.inject.Inject
 
-class SportResultsViewModel : ViewModel() {
+@HiltViewModel
+class SportResultsViewModel @Inject constructor(
+    private val remoteRepository: RemoteRepository,
+    private val localRepository: LocalRepository
+) : ViewModel() {
     var state by mutableStateOf(
         SportResultsState(
             sportResults = listOf(),
@@ -26,7 +32,7 @@ class SportResultsViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            LocalRepository.observe().combine(RemoteRepository.observe()) { local, remote ->
+            localRepository.observe().combine(remoteRepository.observe()) { local, remote ->
                 local + remote
             }.collect { merged ->
                 val sorted = merged.sortedByDescending { it.timestamp }
@@ -50,7 +56,8 @@ class SportResultsViewModel : ViewModel() {
         val showNone = !state.showLocal && !state.showRemote
         val showRemote = state.showRemote || showNone // Showing none is equivalent to showing all
         val showLocal = state.showLocal || showNone // Showing none is equivalent to showing all
-        val filtered = allSportResults.filter { (it.remote && showRemote) || (!it.remote && showLocal) }
+        val filtered =
+            allSportResults.filter { (it.remote && showRemote) || (!it.remote && showLocal) }
         state = state.copy(sportResults = filtered)
     }
 }
