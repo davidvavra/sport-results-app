@@ -72,7 +72,7 @@ class NewSportResultViewModel @Inject constructor(
         // Only proceed if everything is valid
         if (state.nameValid && state.placeValid && state.durationValid) {
             viewModelScope.launch {
-                state = state.copy(savingState = SavingState.IN_PROGRESS)
+                state = state.copy(savingState = SavingState.IN_PROGRESS, sportResult = state.sportResult.copy(timestamp = System.currentTimeMillis()))
                 try {
                     if (state.sportResult.remote) {
                         remoteRepository.new(state.sportResult)

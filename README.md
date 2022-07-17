@@ -19,12 +19,12 @@ The app is a simple tracker of sport results. It allows to enter name, place and
 - Retrofit+Moshi+coroutines for network requests
 - Backend is unauthenticated Firebase Realtime Database (but accessed via REST API, not SDK)
 - Form validation, loading & error handling for new sport result
+- Unit tests for viewmodels & repositories
 
 ## Further work
 I skipped some tech I would normally include in a real production app due to time contraints:
 - Localization (now hardcoded strings)
 - Modularization (`feature/sport-results`, `feature/new-sport-result`, `common/storage`, `common/network`, `common/ui`, `app`)
-- Unit tests for viewmodels & repositories
 - Screenshot tests
 - Espresso tests
 - CI/CD for pull request validation and releases via Github Actions
